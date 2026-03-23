@@ -1,121 +1,123 @@
-"use client"
+"use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import api from './api';
 
 interface User {
-  id: string
-  email: string
-  name: string
+  _id: string;
+  name: string;
+  email: string;
+  role: 'superadmin' | 'tenantadmin' | 'player';
+}
+
+interface Tenant {
+  _id: string;
+  name: string;
+  domain: string;
 }
 
 interface AuthContextType {
-  user: User | null
-  isLoading: boolean
-  login: (email: string, password: string) => Promise<void>
-  register: (email: string, password: string, name: string) => Promise<void>
-  logout: () => void
-  isAuthenticated: boolean
+  user: User | null;
+  tenant: Tenant | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  login: (email: string, password: string, tenantId: string) => Promise<void>;
+  register: (name: string, email: string, password: string, tenantId: string) => Promise<void>;
+  logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
-
-// Helper functions for cookies
-const setAuthCookie = (value: string, days: number = 7) => {
-  const expires = new Date()
-  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000)
-  document.cookie = `auth_token=${value}; expires=${expires.toUTCString()}; path=/`
-}
-
-const clearAuthCookie = () => {
-  document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
-}
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [user, setUser] = useState<User | null>(null);
+  const [tenant, setTenant] = useState<Tenant | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for stored user data
-    const storedUser = localStorage.getItem('user')
-    if (storedUser) {
-      setUser(JSON.parse(storedUser))
+    const token = localStorage.getItem('token');
+    const savedUser = localStorage.getItem('user');
+    const savedTenant = localStorage.getItem('selectedTenant');
+    
+    if (token && savedUser) {
+      setUser(JSON.parse(savedUser));
     }
-    setIsLoading(false)
-  }, [])
+    if (savedTenant) {
+      setTenant(JSON.parse(savedTenant));
+    }
+    
+    setIsLoading(false);
+  }, []);
 
-  const login = async (email: string, password: string) => {
-    setIsLoading(true)
+  const login = async (email: string, password: string, tenantId: string) => {
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500))
+      const response = await api.post('/auth/login', { email, password, tenantId });
+      const { token, ...userData } = response.data;
       
-      const user = {
-        id: '1',
-        email,
-        name: email.split('@')[0]
-      }
-      setUser(user)
-      localStorage.setItem('user', JSON.stringify(user))
-      localStorage.setItem('isAuthenticated', 'true')
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('selectedTenant', JSON.stringify({
+        _id: userData.tenantId,
+        name: userData.tenantName
+      }));
+      localStorage.setItem('tenantId', userData.tenantId); // Store for API interceptor
       
-      // Set cookie for middleware
-      setAuthCookie('authenticated', 7)
-      
-    } finally {
-      setIsLoading(false)
+      setUser(userData);
+      setTenant({ _id: userData.tenantId, name: userData.tenantName, domain: '' });
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Login failed');
     }
-  }
+  };
 
-  const register = async (email: string, password: string, name: string) => {
-    setIsLoading(true)
+  const register = async (name: string, email: string, password: string, tenantId: string) => {
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500))
+      const response = await api.post('/auth/register', { name, email, password, tenantId });
+      const { token, ...userData } = response.data;
       
-      const user = {
-        id: '1',
-        email,
-        name
-      }
-      setUser(user)
-      localStorage.setItem('user', JSON.stringify(user))
-      localStorage.setItem('isAuthenticated', 'true')
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('selectedTenant', JSON.stringify({
+        _id: userData.tenantId,
+        name: userData.tenantName
+      }));
+      localStorage.setItem('tenantId', userData.tenantId); // Store for API interceptor
       
-      // Set cookie for middleware
-      setAuthCookie('authenticated', 7)
-      
-    } finally {
-      setIsLoading(false)
+      setUser(userData);
+      setTenant({ _id: userData.tenantId, name: userData.tenantName, domain: '' });
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Registration failed');
     }
-  }
+  };
 
   const logout = () => {
-    setUser(null)
-    localStorage.removeItem('user')
-    localStorage.removeItem('isAuthenticated')
-    
-    // Clear cookie
-    clearAuthCookie()
-  }
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('selectedTenant');
+    localStorage.removeItem('tenantId');
+    setUser(null);
+    setTenant(null);
+  };
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      isLoading,
-      login,
-      register,
-      logout,
-      isAuthenticated: !!user
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        tenant,
+        isAuthenticated: !!user,
+        isLoading,
+        login,
+        register,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
-  )
+  );
 }
 
 export function useAuth() {
-  const context = useContext(AuthContext)
+  const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
+    throw new Error('useAuth must be used within an AuthProvider');
   }
-  return context
+  return context;
 }

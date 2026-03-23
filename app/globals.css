@@ -203,3 +203,29 @@ html {
   pointer-events: none;
   z-index: 9999;
 }
+/* Add these to your existing globals.css */
+
+/* Gradient text for casino theme */
+.gradient-text-gold {
+  background: linear-gradient(135deg, #fbbf24, #d97706);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Gold border effect */
+.gold-border {
+  border-image: linear-gradient(135deg, #fbbf24, #d97706) 1;
+  border-style: solid;
+  border-width: 1px;
+}
+
+/* Casino card glow */
+.card-glow {
+  transition: all 0.3s ease;
+}
+
+.card-glow:hover {
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+  border-color: rgba(245, 158, 11, 0.5);
+}

@@ -2,8 +2,8 @@
 
 import { useEffect } from 'react'
 import Hero from '@/components/sections/Hero'
-import AgentsShowcase from '@/components/sections/AgentsShowcase'
-import UseCases from '@/components/sections/UseCases'
+import GamesShowcase from '@/components/sections/GamesShowcase'
+import Features from '@/components/sections/Features'
 import Pricing from '@/components/sections/Pricing'
 import Testimonials from '@/components/sections/Testimonials'
 import CTA from '@/components/sections/CTA'
@@ -30,8 +30,8 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <AgentsShowcase />
-      <UseCases />
+      <GamesShowcase />
+      <Features />
       <Pricing />
       <Testimonials />
       <CTA />

@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { ArrowRight, Play } from "lucide-react"
+import { ArrowRight, Play, Crown } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 import Link from "next/link"
 
-const words = ['Voice Agents', 'Calling Agents', 'Restaurant Bots', 'Appointment AI', 'Support Agents', 'Sales Agents']
+const words = ['Online Casino', 'Gaming Platform', 'White-Label Solution', 'Sportsbook', 'Poker Room', 'Live Casino']
 
 export default function Hero() {
   const [typedWord, setTypedWord] = useState('')
@@ -38,17 +38,17 @@ export default function Hero() {
   }, [charIndex, deleting, wordIndex])
 
   const stats = [
-    { value: "2,400+", label: "Active Agents" },
-    { value: "99.9%", label: "Uptime SLA" },
-    { value: "<200ms", label: "Response Time" },
-    { value: "150+", label: "Integrations" },
+    { value: "500+", label: "Active Games" },
+    { value: "99.99%", label: "Uptime SLA" },
+    { value: "24/7", label: "Support" },
+    { value: "100+", label: "Tenants" },
   ]
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
       {/* Background Effects */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-black to-gray-900/50" />
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.02)_1px,transparent_1px)] bg-[size:72px_72px]" />
+      <div className="absolute inset-0 bg-gradient-to-br from-black via-black to-amber-900/20" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,215,0,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,215,0,.02)_1px,transparent_1px)] bg-[size:72px_72px]" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_0%,_black_100%)]" />
       
       {/* Animated Orb */}
@@ -62,7 +62,7 @@ export default function Hero() {
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-gradient-to-r from-white/10 to-white/5 blur-3xl"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-gradient-to-r from-amber-500/20 to-amber-600/10 blur-3xl"
       />
 
       <div className="relative z-10 container mx-auto px-4 text-center">
@@ -72,46 +72,45 @@ export default function Hero() {
           transition={{ duration: 0.8 }}
         >
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 mb-6">
-            <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-            <span className="text-xs text-white/60 font-mono">The AI Agent Marketplace</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-amber-500/20 bg-amber-500/5 mb-6">
+            <Crown className="w-3 h-3 text-amber-500" />
+            <span className="text-xs text-amber-400/80 font-mono">Multitenant Casino Platform</span>
           </div>
 
           {/* Title */}
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-[1.1]">
-            Deploy Your
+            Launch Your
             <br />
-            <span className="bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">
               {typedWord}
             </span>
-            <span className="inline-block w-[2px] h-[0.85em] bg-white ml-1 animate-pulse" />
+            <span className="inline-block w-[2px] h-[0.85em] bg-amber-500 ml-1 animate-pulse" />
             <br />
-            <span className="text-white/40">In Minutes</span>
+            <span className="text-white/40">In Days, Not Months</span>
           </h1>
 
           {/* Description */}
           <p className="text-lg text-white/40 max-w-2xl mx-auto mb-10">
-            AgentsDesk is the all-in-one marketplace to discover, purchase, and deploy AI agents. 
-            From restaurant reservations to cold calling — launch intelligence into your business instantly.
+            CasinoFlow is the complete multitenant casino SaaS platform. Launch your own white-label casino,
+            sportsbook, or poker room with our enterprise-grade solution. Fully customizable and ready to scale.
           </p>
 
-          {/* CTA Buttons */}
-         // Update the CTA buttons section
+         
+          // Find the CTA buttons section and update the hrefs
 <div className="flex flex-col sm:flex-row gap-4 justify-center">
   <Link href="/register">
-    <Button size="lg" className="group">
-      Browse Agents
+    <Button size="lg" className="group bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700">
+      Start Your Casino
       <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
     </Button>
   </Link>
-  <Link href="/register">
-    <Button size="lg" variant="outline">
+  <Link href="#games">
+    <Button size="lg" variant="outline" className="border-amber-500/50 text-amber-400 hover:bg-amber-500/10">
       <Play className="mr-2 w-4 h-4" />
-      See how it works
+      Explore Games
     </Button>
   </Link>
 </div>
-              
 
           {/* Stats */}
           <motion.div
@@ -122,7 +121,7 @@ export default function Hero() {
           >
             {stats.map((stat, i) => (
               <div key={i} className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-white mb-1">
+                <div className="text-2xl md:text-3xl font-bold text-amber-400 mb-1">
                   {stat.value}
                 </div>
                 <div className="text-xs text-white/40 font-mono">{stat.label}</div>
@@ -135,7 +134,7 @@ export default function Hero() {
       {/* Scroll Hint */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
         <span className="text-[10px] font-mono text-white/40">SCROLL</span>
-        <div className="w-px h-8 bg-gradient-to-b from-white/40 to-transparent" />
+        <div className="w-px h-8 bg-gradient-to-b from-amber-500/40 to-transparent" />
       </div>
     </section>
   )

@@ -16,9 +16,9 @@ const spaceGrotesk = Space_Grotesk({
 })
 
 export const metadata: Metadata = {
-  title: 'AI Agents Desk - Next Generation AI Agents Marketplace',
-  description: 'Deploy and scale AI voice agents, calling agents, and specialized AI assistants for your business',
-  keywords: 'AI agents, voice AI, calling agents, restaurant AI, appointment AI, AI marketplace',
+  title: 'CasinoFlow - Multitenant Casino SaaS Platform',
+  description: 'Launch your own white-label casino platform. Fully customizable, secure, and ready to scale.',
+  keywords: 'casino, multitenant, gaming platform, white-label casino, online casino',
 }
 
 export default function RootLayout({

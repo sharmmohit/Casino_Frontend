@@ -1,40 +1,38 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  // Check for auth token in cookies only (localStorage is not available in middleware)
-  const authToken = request.cookies.get('auth_token')
-  const isAuthenticated = !!authToken
+  const hostname = request.headers.get('host') || '';
+  const url = request.nextUrl;
   
-  const isAuthPage = request.nextUrl.pathname.startsWith('/login') || 
-                     request.nextUrl.pathname.startsWith('/register')
-  const isDashboardPage = request.nextUrl.pathname.startsWith('/dashboard')
-  
-  // Redirect logic
-  if (isDashboardPage && !isAuthenticated) {
-    // If trying to access dashboard without auth, redirect to login
-    return NextResponse.redirect(new URL('/login', request.url))
+  // Extract subdomain
+  let subdomain = '';
+  if (hostname.includes('.')) {
+    const parts = hostname.split('.');
+    if (parts.length > 2 || (parts.length === 2 && !parts[0].includes('localhost'))) {
+      subdomain = parts[0];
+    }
   }
   
-  if (isAuthPage && isAuthenticated) {
-    // If already authenticated and trying to access auth pages, redirect to dashboard
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+  // Set tenant ID header for API requests
+  const response = NextResponse.next();
+  
+  if (subdomain && !['www', 'app', 'localhost'].includes(subdomain)) {
+    response.headers.set('x-tenant-id', subdomain);
+  } else {
+    // For development, you can set a default tenant ID from cookie or query param
+    const tenantFromCookie = request.cookies.get('tenantId');
+    if (tenantFromCookie) {
+      response.headers.set('x-tenant-id', tenantFromCookie.value);
+    }
   }
   
-  // Allow the request to proceed
-  return NextResponse.next()
+  return response;
 }
 
-// Configure which routes the middleware should run on
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     */
-    '/((?!_next/static|_next/image|favicon.ico|public/).*)',
+    '/api/:path*',
+    '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
-}
+};

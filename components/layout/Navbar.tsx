@@ -23,10 +23,10 @@ export default function Navbar() {
   }, [])
 
   const navLinks = [
-    { href: "#agents", label: "Agents" },
-    { href: "#how", label: "How it works" },
+    { href: "#games", label: "Games" },
+    { href: "#features", label: "Features" },
     { href: "#pricing", label: "Pricing" },
-    { href: "#usecases", label: "Use Cases" },
+     { href: "/tenant", label: "Launch Casino", isExternal: true },
   ]
 
   const handleLogout = () => {
@@ -44,11 +44,11 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 bg-gradient-to-r from-white to-gray-400 rounded-lg flex items-center justify-center">
-              <span className="text-black text-xs font-bold">AD</span>
+            <div className="w-8 h-8 bg-gradient-to-r from-amber-400 to-amber-600 rounded-lg flex items-center justify-center">
+              <span className="text-black text-xs font-bold">CF</span>
             </div>
             <span className="text-lg font-bold">
-              Agents<span className="text-white/60">Desk</span>
+              Casino<span className="text-amber-400">Flow</span>
             </span>
           </Link>
 
@@ -61,21 +61,31 @@ export default function Navbar() {
                 className="text-sm text-white/60 hover:text-white transition-colors relative group"
               >
                 {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-px bg-white transition-all group-hover:w-full" />
+                <span className="absolute -bottom-1 left-0 w-0 h-px bg-amber-400 transition-all group-hover:w-full" />
               </a>
             ))}
+            {isAuthenticated && (
+              <Link href="/dashboard">
+                <span className="text-sm text-white/60 hover:text-white transition-colors">
+                  Dashboard
+                </span>
+              </Link>
+            )}
           </div>
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-4">
             {isAuthenticated ? (
               <>
+                <span className="text-sm text-amber-400">
+                  {user?.name}
+                </span>
                 <Link href="/dashboard">
                   <Button variant="ghost" size="sm">
                     Dashboard
                   </Button>
                 </Link>
-                <Button onClick={handleLogout} size="sm">
+                <Button onClick={handleLogout} size="sm" variant="outline">
                   Sign Out
                 </Button>
               </>
@@ -87,8 +97,8 @@ export default function Navbar() {
                   </Button>
                 </Link>
                 <Link href="/register">
-                  <Button size="sm">
-                    Get Started Free
+                  <Button size="sm" className="bg-gradient-to-r from-amber-500 to-amber-600">
+                    Get Started
                   </Button>
                 </Link>
               </>
@@ -117,15 +127,20 @@ export default function Navbar() {
                 {link.label}
               </a>
             ))}
+            {isAuthenticated && (
+              <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
+                <span className="block py-3 text-white/60 hover:text-white transition-colors">
+                  Dashboard
+                </span>
+              </Link>
+            )}
             <div className="flex flex-col gap-3 pt-4">
               {isAuthenticated ? (
                 <>
-                  <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Button variant="outline" className="w-full">
-                      Dashboard
-                    </Button>
-                  </Link>
-                  <Button onClick={handleLogout} className="w-full">
+                  <span className="text-sm text-amber-400 py-2">
+                    {user?.name}
+                  </span>
+                  <Button onClick={handleLogout} className="w-full" variant="outline">
                     Sign Out
                   </Button>
                 </>
@@ -137,8 +152,8 @@ export default function Navbar() {
                     </Button>
                   </Link>
                   <Link href="/register" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Button className="w-full">
-                      Get Started Free
+                    <Button className="w-full bg-gradient-to-r from-amber-500 to-amber-600">
+                      Get Started
                     </Button>
                   </Link>
                 </>
